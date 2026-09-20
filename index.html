@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="每日班級訂餐與點餐統計表單 - 專為 IG、Chrome、Safari 優化的手機訂餐系統">
+  <meta name="theme-color" content="#12121c">
+  <title>班級每日訂餐統計</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <!-- Top App Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="header-brand">
+        <div>
+          <h1 class="brand-title">班級訂餐統計</h1>
+          <div class="header-timer">
+            <span class="pulse-dot"></span>
+            <span id="tw-clock">台灣時間 --:--:--</span>
+            <span class="timer-divider">|</span>
+            <span id="reset-countdown">距 24:00 重置: --:--</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-history" class="icon-btn" title="歷史紀錄">
+          <span class="material-icons-round">history</span>
+        </button>
+        <button id="btn-manage-students" class="icon-btn" title="名單設定">
+          <span class="material-icons-round">people</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Student Identity Selector Bar -->
+    <section class="user-bar glass-card">
+      <div class="user-bar-label">
+        <span class="material-icons-round">account_circle</span>
+        <span>我是誰：</span>
+      </div>
+      <div class="user-bar-select-wrap">
+        <select id="user-select" class="user-dropdown">
+          <!-- Populated by JS -->
+        </select>
+        <span class="material-icons-round select-arrow">arrow_drop_down</span>
+      </div>
+    </section>
+
+    <!-- Today's Status Banner -->
+    <div class="status-banner">
+      <div class="banner-info">
+        <span class="badge badge-date" id="current-date-badge">----/--/--</span>
+        <span class="badge badge-status">訂餐統計進行中</span>
+      </div>
+      <div class="banner-sub">每天 24:00 台灣時間自動結單歸檔並重置表單</div>
+    </div>
+
+    <!-- Action Button to Add Store -->
+    <div class="action-row">
+      <button id="btn-add-store" class="btn btn-primary btn-block">
+        <span class="material-icons-round">add_business</span>
+        <span>張貼今日店家</span>
+      </button>
+    </div>
+
+    <!-- Store Lists & Comment Orders -->
+    <section id="stores-container" class="stores-section">
+      <!-- Store cards dynamically inserted here -->
+    </section>
+
+    <!-- Empty State when no stores added -->
+    <div id="empty-stores-state" class="empty-card glass-card">
+      <div class="empty-icon"><span class="material-icons-round" style="font-size: 48px; color: var(--text-sub);">store</span></div>
+      <h3>今日尚未張貼任何店家</h3>
+      <p>點擊上方「張貼今日店家」按鈕新增店家，讓大家開始留言點餐！</p>
+    </div>
+
+  </main>
+
+  <!-- Sticky Bottom Actions -->
+  <div class="bottom-bar">
+    <button id="btn-copy-all" class="btn btn-accent btn-block">
+      <span class="material-icons-round">content_copy</span>
+      <span>一鍵複製今日訂餐統計</span>
+    </button>
+  </div>
+
+  <!-- Modal: Add Store (Simplified: Only Store Name, No Placeholders) -->
+  <div id="modal-store" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3>張貼今日店家</h3>
+        <button class="modal-close icon-btn" data-close="modal-store">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="store-name-input">店家名稱</label>
+          <input type="text" id="store-name-input" required>
+        </div>
+
+        <button id="btn-save-store" class="btn btn-primary btn-block">發布店家</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Image Zoom View -->
+  <div id="modal-image" class="modal-overlay hidden">
+    <div class="modal-image-wrap">
+      <button class="modal-close icon-btn image-close-btn" data-close="modal-image">
+        <span class="material-icons-round">close</span>
+      </button>
+      <img id="modal-zoomed-img" src="" alt="大圖">
+    </div>
+  </div>
+
+  <!-- Modal: History Viewer -->
+  <div id="modal-history" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3>歷史訂餐紀錄 (往日自動備份)</h3>
+        <button class="modal-close icon-btn" data-close="modal-history">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="history-list" class="history-list">
+          <!-- History items -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Student Names Manager -->
+  <div id="modal-students" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3>編輯全班同學名單 (34人)</h3>
+        <button class="modal-close icon-btn" data-close="modal-students">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="hint-text">每行輸入一位同學名字或座號（預設 01號 ~ 34號）：</p>
+        <textarea id="students-textarea" rows="12"></textarea>
+        <button id="btn-save-students" class="btn btn-primary btn-block">儲存名單列表</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+</body>
+</html>
