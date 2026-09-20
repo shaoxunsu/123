@@ -8,11 +8,72 @@
   <title>班級每日訂餐統計</title>
   
   <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   
+  <!-- 這裡幫你補上完美的黑夜模式高質感 CSS 外觀 -->
+  <style>
+    :root {
+      --bg-dark: #12121c;
+      --card-bg: rgba(30, 30, 45, 0.7);
+      --primary-color: #6366f1;
+      --accent-color: #a855f7;
+      --text-main: #ffffff;
+      --text-sub: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Noto Sans TC', sans-serif;
+      margin: 0;
+      padding-bottom: 80px;
+    }
+    .app-header {
+      background: linear-gradient(135deg, #1e1b4b, #311042);
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title { margin: 0; font-size: 1.4rem; font-weight: 900; }
+    .header-timer { font-size: 0.8rem; color: var(--text-sub); display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+    .pulse-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+    .icon-btn { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 8px; border-radius: 50%; transition: background 0.3s; }
+    .icon-btn:hover { background: rgba(255,255,255,0.1); }
+    .main-container { padding: 20px; max-width: 600px; margin: 0 auto; }
+    .glass-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 20px; }
+    .user-bar { display: flex; align-items: center; justify-content: space-between; }
+    .user-bar-label { display: flex; align-items: center; gap: 8px; color: var(--text-sub); }
+    .user-bar-select-wrap { position: relative; width: 60%; }
+    .user-dropdown { width: 100%; background: #0f172a; color: #fff; border: 1px solid var(--border-color); padding: 8px; border-radius: 8px; appearance: none; }
+    .select-arrow { position: absolute; right: 8px; top: 8px; pointer-events: none; }
+    .status-banner { margin-bottom: 20px; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-right: 5px; }
+    .badge-date { background: #334155; }
+    .badge-status { background: #1e3a8a; color: #3b82f6; }
+    .banner-sub { font-size: 0.75rem; color: var(--text-sub); margin-top: 5px; }
+    .btn { background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.3s; }
+    .btn-block { width: 100%; box-sizing: border-box; }
+    .btn-primary { background: var(--primary-color); }
+    .btn-accent { background: var(--accent-color); }
+    .empty-card { text-align: center; padding: 4px; color: var(--text-sub); }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #09090b; padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; }
+    .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+    .hidden { display: none !important; }
+    .modal-card { width: 90%; max-width: 450px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; color: var(--text-sub); }
+    .form-group input, .form-group textarea { width: 100%; box-sizing: border-box; background: #0f172a; border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 8px; }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+  </style>
 </head>
 <body>
 
@@ -43,7 +104,7 @@
 
   <main class="main-container">
 
-    <!-- Student Identity Selector Bar -->
+    
     <section class="user-bar glass-card">
       <div class="user-bar-label">
         <span class="material-icons-round">account_circle</span>
@@ -96,7 +157,7 @@
     </button>
   </div>
 
-  <!-- Modal: Add Store (Simplified: Only Store Name, No Placeholders) -->
+  <!-- Modal: Add Store -->
   <div id="modal-store" class="modal-overlay hidden">
     <div class="modal-card glass-card">
       <div class="modal-header">
@@ -110,7 +171,6 @@
           <label for="store-name-input">店家名稱</label>
           <input type="text" id="store-name-input" required>
         </div>
-
         <button id="btn-save-store" class="btn btn-primary btn-block">發布店家</button>
       </div>
     </div>
@@ -136,9 +196,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <div id="history-list" class="history-list">
-          <!-- History items -->
-        </div>
+        <div id="history-list" class="history-list"></div>
       </div>
     </div>
   </div>
@@ -160,8 +218,137 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div id="toast-container" class="toast-container"></div>
 
+  <!-- 這裡幫你補上完美的網頁邏輯 JavaScript -->
+  <script>
+    // 預設 34 位同學
+    let students = Array.from({length: 34}, (_, i) => String(i + 1).padStart(2, '0') + '號');
+    
+    // 初始化網頁功能
+    document.addEventListener("DOMContentLoaded", () => {
+      updateClock();
+      setInterval(updateClock, 1000);
+      renderStudentsDropdown();
+      <button class="modal-close icon-btn image-close-btn" data-close="modal-image">
+        <span class="material-icons-round">close</span>
+      </button>
+      <img id="modal-zoomed-img" src="" alt="大圖">
+    </div>
+  </div>
+
+  <!-- Modal: History Viewer -->
+  <div id="modal-history" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3>歷史訂餐紀錄 (往日自動備份)</h3>
+        <button class="modal-close icon-btn" data-close="modal-history">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="history-list" class="history-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Student Names Manager -->
+  <div id="modal-students" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3>編輯全班同學名單 (34人)</h3>
+        <button class="modal-close icon-btn" data-close="modal-students">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="hint-text">每行輸入一位同學名字或座號（預設 01號 ~ 34號）：</p>
+        <textarea id="students-textarea" rows="12"></textarea>
+        <button id="btn-save-students" class="btn btn-primary btn-block">儲存名單列表</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- 點餐邏輯控制 JavaScript -->
+  <script>
+    let students = Array.from({length: 34}, (_, i) => String(i + 1).padStart(2, '0') + '號');
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      updateClock();
+      setInterval(updateClock, 1000);
+      renderStudentsDropdown();
+      setupEventListeners();
+    });
+
+    function updateClock() {
+      const now = new Date();
+      const twTime = now.toLocaleTimeString('zh-TW', { hour12: false });
+      document.getElementById("tw-clock").innerText = `台灣時間 ${twTime}`;
+      
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      document.getElementById("current-date-badge").innerText = `${yyyy}/${mm}/${dd}`;
+
+      const hours = String(23 - now.getHours()).padStart(2, '0');
+      const mins = String(59 - now.getMinutes()).padStart(2, '0');
+      document.getElementById("reset-countdown").innerText = `距 24:00 重置: ${hours}:${mins}`;
+    }
+
+    function renderStudentsDropdown() {
+      const select = document.getElementById("user-select");
+      select.innerHTML = students.map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+
+    function setupEventListeners() {
+      const toggleModal = (id, show) => {
+        document.getElementById(id).classList.toggle('hidden', !show);
+      };
+
+      document.getElementById("btn-add-store").onclick = () => toggleModal("modal-store", true);
+      document.getElementById("btn-history").onclick = () => toggleModal("modal-history", true);
+      document.getElementById("btn-manage-students").onclick = () => {
+        document.getElementById("students-textarea").value = students.join('\n');
+        toggleModal("modal-students", true);
+      };
+
+      document.querySelectorAll("[data-close]").forEach(btn => {
+        btn.onclick = () => toggleModal(btn.getAttribute('data-close'), false);
+      });
+
+      document.getElementById("btn-save-students").onclick = () => {
+        const text = document.getElementById("students-textarea").value;
+        students = text.split('\n').map(s => s.trim()).filter(s => s);
+        renderStudentsDropdown();
+        toggleModal("modal-students", false);
+        showToast("名單儲存成功！");
+      };
+
+      document.getElementById("btn-save-store").onclick = () => {
+        const name = document.getElementById("store-name-input").value.trim();
+        if(!name) return;
+        document.getElementById("empty-stores-state").classList.add('hidden');
+        
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        card.innerHTML = `<h3>🏪 ${name}</h3><p style="color:var(--text-sub)">目前尚無留言點餐</p>`;
+        document.getElementById("stores-container").appendChild(card);
+        
+        document.getElementById("store-name-input").value = '';
+        toggleModal("modal-store", false);
+        showToast(`成功張貼店家：${name}`);
+      };
+    }
+
+    function showToast(msg) {
+      const toast = document.createElement('div');
+      toast.style.cssText = "background:#6366f1; color:white; padding:10px 20px; border-radius:8px; margin-bottom:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);";
+      toast.innerText = msg;
+      document.getElementById("toast-container").appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+  </script>
 </body>
 </html>
