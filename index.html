@@ -7,13 +7,13 @@
   <meta name="theme-color" content="#12121c">
   <title>班級每日訂餐統計</title>
   
-  <!-- Fonts & Icons -->
+  <!-- 外部字體與圖示 -->
   <link rel="preconnect" href="https://googleapis.com">
   <link rel="preconnect" href="https://gstatic.com" crossorigin>
   <link href="https://googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link href="https://googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   
-  <!-- 這裡幫你補上完美的黑夜模式高質感 CSS 外觀 -->
+  <!-- 高質感黑夜模式 CSS 樣式表 -->
   <style>
     :root {
       --bg-dark: #12121c;
@@ -29,7 +29,7 @@
       color: var(--text-main);
       font-family: 'Noto Sans TC', sans-serif;
       margin: 0;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
     }
     .app-header {
       background: linear-gradient(135deg, #1e1b4b, #311042);
@@ -52,32 +52,32 @@
     .user-bar { display: flex; align-items: center; justify-content: space-between; }
     .user-bar-label { display: flex; align-items: center; gap: 8px; color: var(--text-sub); }
     .user-bar-select-wrap { position: relative; width: 60%; }
-    .user-dropdown { width: 100%; background: #0f172a; color: #fff; border: 1px solid var(--border-color); padding: 8px; border-radius: 8px; appearance: none; }
+    .user-dropdown { width: 100%; background: #0f172a; color: #fff; border: 1px solid var(--border-color); padding: 8px; border-radius: 8px; appearance: none; font-size: 1rem; }
     .select-arrow { position: absolute; right: 8px; top: 8px; pointer-events: none; }
     .status-banner { margin-bottom: 20px; }
     .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-right: 5px; }
     .badge-date { background: #334155; }
     .badge-status { background: #1e3a8a; color: #3b82f6; }
     .banner-sub { font-size: 0.75rem; color: var(--text-sub); margin-top: 5px; }
-    .btn { background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.3s; }
+    .btn { background: var(--primary-color); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.3s; font-size: 1rem; }
     .btn-block { width: 100%; box-sizing: border-box; }
     .btn-primary { background: var(--primary-color); }
     .btn-accent { background: var(--accent-color); }
-    .empty-card { text-align: center; padding: 4px; color: var(--text-sub); }
+    .empty-card { text-align: center; padding: 30px; color: var(--text-sub); }
     .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #09090b; padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; }
-    .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+    .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
     .hidden { display: none !important; }
-    .modal-card { width: 90%; max-width: 450px; }
+    .modal-card { width: 100%; max-width: 450px; box-sizing: border-box; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; color: var(--text-sub); }
-    .form-group input, .form-group textarea { width: 100%; box-sizing: border-box; background: #0f172a; border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 8px; }
-    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+    .form-group input, .form-group textarea { width: 100%; box-sizing: border-box; background: #0f172a; border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 8px; font-size: 1rem; }
+    .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 90%; max-width: 350px; }
   </style>
 </head>
 <body>
 
-  <!-- Top App Header -->
+  <!-- 頂部標題區 -->
   <header class="app-header">
     <div class="header-content">
       <div class="header-brand">
@@ -92,33 +92,23 @@
         </div>
       </div>
       <div class="header-actions">
-        <button id="btn-history" class="icon-btn" title="歷史紀錄">
-          <span class="material-icons-round">history</span>
-        </button>
-        <button id="btn-manage-students" class="icon-btn" title="名單設定">
-          <span class="material-icons-round">people</span>
-        </button>
+        <button id="btn-history" class="icon-btn" title="歷史紀錄"><span class="material-icons-round">history</span></button>
+        <button id="btn-manage-students" class="icon-btn" title="名單設定"><span class="material-icons-round">people</span></button>
       </div>
     </div>
   </header>
 
   <main class="main-container">
-
-    
+    <!-- 身分選擇 -->
     <section class="user-bar glass-card">
-      <div class="user-bar-label">
-        <span class="material-icons-round">account_circle</span>
-        <span>我是誰：</span>
-      </div>
+      <div class="user-bar-label"><span class="material-icons-round">account_circle</span><span>我是誰：</span></div>
       <div class="user-bar-select-wrap">
-        <select id="user-select" class="user-dropdown">
-          <!-- Populated by JS -->
-        </select>
+        <select id="user-select" class="user-dropdown"></select>
         <span class="material-icons-round select-arrow">arrow_drop_down</span>
       </div>
     </section>
 
-    <!-- Today's Status Banner -->
+    <!-- 狀態公告 -->
     <div class="status-banner">
       <div class="banner-info">
         <span class="badge badge-date" id="current-date-badge">----/--/--</span>
@@ -127,228 +117,44 @@
       <div class="banner-sub">每天 24:00 台灣時間自動結單歸檔並重置表單</div>
     </div>
 
-    <!-- Action Button to Add Store -->
+    <!-- 功能按鈕 -->
     <div class="action-row">
-      <button id="btn-add-store" class="btn btn-primary btn-block">
-        <span class="material-icons-round">add_business</span>
-        <span>張貼今日店家</span>
-      </button>
+      <button id="btn-add-store" class="btn btn-primary btn-block"><span class="material-icons-round">add_business</span><span>張貼今日店家</span></button>
     </div>
 
-    <!-- Store Lists & Comment Orders -->
-    <section id="stores-container" class="stores-section">
-      <!-- Store cards dynamically inserted here -->
-    </section>
+    <!-- 店家與點餐清單區 -->
+    <section id="stores-container" class="stores-section"></section>
 
-    <!-- Empty State when no stores added -->
+    <!-- 空白狀態 -->
     <div id="empty-stores-state" class="empty-card glass-card">
       <div class="empty-icon"><span class="material-icons-round" style="font-size: 48px; color: var(--text-sub);">store</span></div>
       <h3>今日尚未張貼任何店家</h3>
       <p>點擊上方「張貼今日店家」按鈕新增店家，讓大家開始留言點餐！</p>
     </div>
-
   </main>
 
-  <!-- Sticky Bottom Actions -->
+  <!-- 底部固定按鈕 -->
   <div class="bottom-bar">
-    <button id="btn-copy-all" class="btn btn-accent btn-block">
-      <span class="material-icons-round">content_copy</span>
-      <span>一鍵複製今日訂餐統計</span>
-    </button>
+    <button id="btn-copy-all" class="btn btn-accent btn-block"><span class="material-icons-round">content_copy</span><span>一鍵複製今日訂餐統計</span></button>
   </div>
 
-  <!-- Modal: Add Store -->
+  <!-- 彈出視窗：新增店家 -->
   <div id="modal-store" class="modal-overlay hidden">
     <div class="modal-card glass-card">
       <div class="modal-header">
         <h3>張貼今日店家</h3>
-        <button class="modal-close icon-btn" data-close="modal-store">
-          <span class="material-icons-round">close</span>
-        </button>
+        <button class="modal-close icon-btn" data-close="modal-store"><span class="material-icons-round">close</span></button>
       </div>
       <div class="modal-body">
         <div class="form-group">
           <label for="store-name-input">店家名稱</label>
-          <input type="text" id="store-name-input" required>
+          <input type="text" id="store-name-input" placeholder="例如：大呼過癮、麥當勞" required>
         </div>
         <button id="btn-save-store" class="btn btn-primary btn-block">發布店家</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Image Zoom View -->
-  <div id="modal-image" class="modal-overlay hidden">
-    <div class="modal-image-wrap">
-      <button class="modal-close icon-btn image-close-btn" data-close="modal-image">
-        <span class="material-icons-round">close</span>
-      </button>
-      <img id="modal-zoomed-img" src="" alt="大圖">
-    </div>
-  </div>
-
-  <!-- Modal: History Viewer -->
-  <div id="modal-history" class="modal-overlay hidden">
-    <div class="modal-card glass-card">
-      <div class="modal-header">
-        <h3>歷史訂餐紀錄 (往日自動備份)</h3>
-        <button class="modal-close icon-btn" data-close="modal-history">
-          <span class="material-icons-round">close</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="history-list" class="history-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Student Names Manager -->
-  <div id="modal-students" class="modal-overlay hidden">
-    <div class="modal-card glass-card">
-      <div class="modal-header">
-        <h3>編輯全班同學名單 (34人)</h3>
-        <button class="modal-close icon-btn" data-close="modal-students">
-          <span class="material-icons-round">close</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="hint-text">每行輸入一位同學名字或座號（預設 01號 ~ 34號）：</p>
-        <textarea id="students-textarea" rows="12"></textarea>
-        <button id="btn-save-students" class="btn btn-primary btn-block">儲存名單列表</button>
-      </div>
-    </div>
-  </div>
-
   <div id="toast-container" class="toast-container"></div>
-
-  <!-- 這裡幫你補上完美的網頁邏輯 JavaScript -->
-  <script>
-    // 預設 34 位同學
-    let students = Array.from({length: 34}, (_, i) => String(i + 1).padStart(2, '0') + '號');
-    
-    // 初始化網頁功能
-    document.addEventListener("DOMContentLoaded", () => {
-      updateClock();
-      setInterval(updateClock, 1000);
-      renderStudentsDropdown();
-      <button class="modal-close icon-btn image-close-btn" data-close="modal-image">
-        <span class="material-icons-round">close</span>
-      </button>
-      <img id="modal-zoomed-img" src="" alt="大圖">
-    </div>
-  </div>
-
-  <!-- Modal: History Viewer -->
-  <div id="modal-history" class="modal-overlay hidden">
-    <div class="modal-card glass-card">
-      <div class="modal-header">
-        <h3>歷史訂餐紀錄 (往日自動備份)</h3>
-        <button class="modal-close icon-btn" data-close="modal-history">
-          <span class="material-icons-round">close</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="history-list" class="history-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Student Names Manager -->
-  <div id="modal-students" class="modal-overlay hidden">
-    <div class="modal-card glass-card">
-      <div class="modal-header">
-        <h3>編輯全班同學名單 (34人)</h3>
-        <button class="modal-close icon-btn" data-close="modal-students">
-          <span class="material-icons-round">close</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="hint-text">每行輸入一位同學名字或座號（預設 01號 ~ 34號）：</p>
-        <textarea id="students-textarea" rows="12"></textarea>
-        <button id="btn-save-students" class="btn btn-primary btn-block">儲存名單列表</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="toast-container" class="toast-container"></div>
-
-  <!-- 點餐邏輯控制 JavaScript -->
-  <script>
-    let students = Array.from({length: 34}, (_, i) => String(i + 1).padStart(2, '0') + '號');
-    
-    document.addEventListener("DOMContentLoaded", () => {
-      updateClock();
-      setInterval(updateClock, 1000);
-      renderStudentsDropdown();
-      setupEventListeners();
-    });
-
-    function updateClock() {
-      const now = new Date();
-      const twTime = now.toLocaleTimeString('zh-TW', { hour12: false });
-      document.getElementById("tw-clock").innerText = `台灣時間 ${twTime}`;
-      
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, '0');
-      const dd = String(now.getDate()).padStart(2, '0');
-      document.getElementById("current-date-badge").innerText = `${yyyy}/${mm}/${dd}`;
-
-      const hours = String(23 - now.getHours()).padStart(2, '0');
-      const mins = String(59 - now.getMinutes()).padStart(2, '0');
-      document.getElementById("reset-countdown").innerText = `距 24:00 重置: ${hours}:${mins}`;
-    }
-
-    function renderStudentsDropdown() {
-      const select = document.getElementById("user-select");
-      select.innerHTML = students.map(s => `<option value="${s}">${s}</option>`).join('');
-    }
-
-    function setupEventListeners() {
-      const toggleModal = (id, show) => {
-        document.getElementById(id).classList.toggle('hidden', !show);
-      };
-
-      document.getElementById("btn-add-store").onclick = () => toggleModal("modal-store", true);
-      document.getElementById("btn-history").onclick = () => toggleModal("modal-history", true);
-      document.getElementById("btn-manage-students").onclick = () => {
-        document.getElementById("students-textarea").value = students.join('\n');
-        toggleModal("modal-students", true);
-      };
-
-      document.querySelectorAll("[data-close]").forEach(btn => {
-        btn.onclick = () => toggleModal(btn.getAttribute('data-close'), false);
-      });
-
-      document.getElementById("btn-save-students").onclick = () => {
-        const text = document.getElementById("students-textarea").value;
-        students = text.split('\n').map(s => s.trim()).filter(s => s);
-        renderStudentsDropdown();
-        toggleModal("modal-students", false);
-        showToast("名單儲存成功！");
-      };
-
-      document.getElementById("btn-save-store").onclick = () => {
-        const name = document.getElementById("store-name-input").value.trim();
-        if(!name) return;
-        document.getElementById("empty-stores-state").classList.add('hidden');
-        
-        const card = document.createElement('div');
-        card.className = 'glass-card';
-        card.innerHTML = `<h3>🏪 ${name}</h3><p style="color:var(--text-sub)">目前尚無留言點餐</p>`;
-        document.getElementById("stores-container").appendChild(card);
-        
-        document.getElementById("store-name-input").value = '';
-        toggleModal("modal-store", false);
-        showToast(`成功張貼店家：${name}`);
-      };
-    }
-
-    function showToast(msg) {
-      const toast = document.createElement('div');
-      toast.style.cssText = "background:#6366f1; color:white; padding:10px 20px; border-radius:8px; margin-bottom:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);";
-      toast.innerText = msg;
-      document.getElementById("toast-container").appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-  </script>
 </body>
 </html>
